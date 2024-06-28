@@ -1,4 +1,4 @@
-import { SECRET_JWT_KEY } from '../config'
+import { SECRET_JWT_KEY } from '../config.js'
 import jwt from 'jsonwebtoken'
 
 export const checkSession = (req, res, next) => {

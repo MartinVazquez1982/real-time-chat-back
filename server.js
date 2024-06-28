@@ -1,7 +1,7 @@
 import express from 'express'
-import { authRouter } from './routes/auth'
-import { PORT } from './config'
-import { checkSession } from './middlewares/check-sesion'
+import { userRouter } from './routes/users.js'
+import { PORT } from './config.js'
+import { checkSession } from './middlewares/check-sesion.js'
 
 const app = express()
 
@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
   res.send('Servidor de chat en tiempo real funcionando')
 })
 
-app.use('/auth', authRouter)
+app.use('/auth', userRouter)
 
 app.listen(PORT, () => {
   console.log(`server listening on port: http://localhost:${PORT}`)
