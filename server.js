@@ -2,6 +2,8 @@ import express from 'express'
 import { userRouter } from './routes/users.js'
 import { PORT } from './config.js'
 import { checkSession } from './middlewares/check-sesion.js'
+import cors from 'cors'
+import cookieParser from 'cookie-parser'
 
 const app = express()
 
@@ -10,6 +12,11 @@ app.disable('x-powered-by')
 // Middlewares
 
 app.use(express.json())
+app.use(cookieParser())
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}))
 app.use(checkSession)
 
 // Routes

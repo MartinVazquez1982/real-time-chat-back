@@ -5,7 +5,6 @@ export const checkSession = (req, res, next) => {
   if (!req.path.startsWith('/auth')) {
     const token = req.cookies.access_token
     let data = null
-
     req.session = { user: null }
 
     try {

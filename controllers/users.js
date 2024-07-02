@@ -37,7 +37,6 @@ export class Users {
       res.cookie('access_token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production', // True la cookie solo se accede en https
-        sameSite: 'strict', //  Solo se puede acceder desde el mismo dominio
         maxAge: 1000 * 60 * 60 // La cookie solo vale una hora
       }).send({ status: 200, user })
     } catch (error) {
