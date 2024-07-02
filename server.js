@@ -1,5 +1,6 @@
 import express from 'express'
 import { userRouter } from './routes/users.js'
+import { chatRouter } from './routes/chat.js'
 import { PORT } from './config.js'
 import { checkSession } from './middlewares/check-sesion.js'
 import cors from 'cors'
@@ -26,6 +27,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/auth', userRouter)
+app.use('/chat', chatRouter)
 
 app.listen(PORT, () => {
   console.log(`server listening on port: http://localhost:${PORT}`)

@@ -1,16 +1,6 @@
-import mysql from 'mysql2/promise'
 import bcrypt from 'bcrypt'
 import { SALT_ROUND } from '../config.js'
-
-const config = {
-  host: 'localhost',
-  user: 'root',
-  port: 3307,
-  password: '12345',
-  database: 'REALTIMECHAT'
-}
-
-const connection = await mysql.createConnection(config)
+import { connection } from '../db.js'
 
 export class UserModel {
   static async register ({ newUser }) {
