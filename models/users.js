@@ -1,5 +1,4 @@
 import bcrypt from 'bcrypt'
-import { SALT_ROUND } from '../config.js'
 import { connection } from '../db.js'
 
 export class UserModel {
@@ -12,7 +11,7 @@ export class UserModel {
     try {
       const [uuidResult] = await connection.query('SELECT UUID() uuid;')
       const { uuid } = uuidResult[0]
-      const hashedPassword = await bcrypt.hash(password, SALT_ROUND)
+      const hashedPassword = await bcrypt.hash(password, process.env.HASH_SALT_ROUND)
       await connection.query(
         'INSERT INTO USERTABLE (id, username, email, password) VALUES (UUID_TO_BIN(?),?,?,?)',
         [uuid, username, email, hashedPassword]

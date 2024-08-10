@@ -1,9 +1,9 @@
+import 'dotenv/config'
 import express from 'express'
 import http from 'http'
 import { Server } from 'socket.io'
 import { userRouter } from './routes/users.js'
 import { chatRouter } from './routes/chat.js'
-import { PORT } from './config.js'
 import { checkSessionFetch } from './middlewares/check-sesion-fetch.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
@@ -35,6 +35,9 @@ app.use('/chat', chatRouter)
 // Socket.io Setup
 setupSocket(io)
 
-server.listen(PORT, () => {
-  console.log(`server listening on port: http://localhost:${PORT}`)
+// PORT Configuration
+const port = process.env.PORT || 3000
+
+server.listen(port, () => {
+  console.log(`server listening on port: http://localhost:${port}`)
 })

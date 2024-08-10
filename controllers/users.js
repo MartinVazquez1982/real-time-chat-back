@@ -1,7 +1,6 @@
 // import jwt from 'jsonwebtoken'
 import { UserModel } from '../models/users.js'
 import { validateUser } from '../schemas/users.js'
-import { SECRET_JWT_KEY } from '../config.js'
 import jwt from 'jsonwebtoken'
 
 export class Users {
@@ -29,9 +28,9 @@ export class Users {
       const user = await UserModel.login({ User: { username, password } })
       const token = jwt.sign(
         { id: user.id, username: user.username },
-        SECRET_JWT_KEY,
+        process.env.JWT_SECRET_KEY,
         {
-          expiresIn: '1h'
+          expiresIn: process.env.JWT_EXPIRATION
         }
       )
       res.cookie('access_token', token, {

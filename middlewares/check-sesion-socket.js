@@ -1,4 +1,3 @@
-import { SECRET_JWT_KEY } from '../config.js'
 import jwt from 'jsonwebtoken'
 
 const getCookie = (cookie, name) => {
@@ -12,7 +11,7 @@ export const checkSessionSocket = (socket, next) => {
   let data = null
   socket.session = { user: null }
   try {
-    data = jwt.verify(token, SECRET_JWT_KEY)
+    data = jwt.verify(token, process.env.JWT_SECRET_KEY)
     socket.session.user = data
   } catch {
     const error = new Error('Failed to authenticate token')

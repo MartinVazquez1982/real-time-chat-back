@@ -1,4 +1,3 @@
-import { SECRET_JWT_KEY } from '../config.js'
 import jwt from 'jsonwebtoken'
 
 export const checkSessionFetch = (req, res, next) => {
@@ -7,7 +6,7 @@ export const checkSessionFetch = (req, res, next) => {
     let data = null
     req.session = { user: null }
     try {
-      data = jwt.verify(token, SECRET_JWT_KEY)
+      data = jwt.verify(token, process.env.JWT_SECRET_KEY)
       req.session.user = data
     } catch {
       return res.status(403).json({ message: 'Access not authorized' })
