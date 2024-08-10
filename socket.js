@@ -1,10 +1,6 @@
 import { checkSessionSocket } from './middlewares/check-sesion-socket.js'
 import { Chat } from './controllers/chat.js'
 
-/* Falta colocarle cuando se conecta un socket el username. Para luego buscar
-ese usuario y enviarle el mensaje
-*/
-
 const sockets = {}
 
 export const setupSocket = (io) => {

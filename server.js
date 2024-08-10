@@ -5,6 +5,7 @@ import { Server } from 'socket.io'
 import { userRouter } from './routes/users.js'
 import { chatRouter } from './routes/chat.js'
 import { checkSessionFetch } from './middlewares/check-sesion-fetch.js'
+import { internalErrors } from './middlewares/internal-errors.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import { setupSocket } from './socket.js'
@@ -22,6 +23,8 @@ app.use(cors({
   origin: 'http://localhost:5173',
   credentials: true
 }))
+
+// Middleware session
 app.use(checkSessionFetch)
 
 // Routes
@@ -31,6 +34,9 @@ app.get('/', (req, res) => {
 
 app.use('/auth', userRouter)
 app.use('/chat', chatRouter)
+
+// Middleware internal errors
+app.use(internalErrors)
 
 // Socket.io Setup
 setupSocket(io)
