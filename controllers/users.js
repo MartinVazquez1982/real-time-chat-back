@@ -45,6 +45,6 @@ export class Users {
   }
 
   static async logout (req, res) {
-    res.clearCookie('access_token').json({ message: 'logout succesful' })
+    res.status(200).clearCookie('access_token').json({ message: 'logout succesful' })
   }
 }

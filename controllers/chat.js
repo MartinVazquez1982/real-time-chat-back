@@ -30,10 +30,10 @@ export class Chat {
         to
       } = data
       await ChatModel.AddMenssage({
-        message: message,
-        date: date,
+        message,
+        date,
         from: fromID,
-        to: to
+        to
       })
       if (toSocket !== null) {
         toSocket.emit('chat_message', message, fromUser, to, date)
