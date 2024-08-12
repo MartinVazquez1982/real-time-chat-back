@@ -2,14 +2,15 @@
 import { UserModel } from '../models/users.js'
 import { validateUser } from '../schemas/users.js'
 import jwt from 'jsonwebtoken'
+import { ClientError, ServerError } from '../utils/errors.js'
 
 export class Users {
-  static async register (req, res) {
-    const result = validateUser(req.body)
-    if (result.error) {
-      return res.status(400).json({ error: JSON.parse(result.error.message) })
-    }
+  static async register (req, res, next) {
     try {
+      const result = validateUser(req.body)
+      if (result.error) {
+        throw new ClientError(result.error.issues.map(item => item.message).join(' - '))
+      }
       const {
         username,
         password,
@@ -18,11 +19,11 @@ export class Users {
       const response = await UserModel.register({ newUser: { username, password, email } })
       res.send({ status: 200 }).json(response)
     } catch (error) {
-      res.status(400).send(error.message)
+      next(error)
     }
   }
 
-  static async login (req, res) {
+  static async login (req, res, next) {
     const { username, password } = req.body
     try {
       const user = await UserModel.login({ User: { username, password } })
@@ -39,7 +40,10 @@ export class Users {
         maxAge: 1000 * 60 * 60 // La cookie solo vale una hora
       }).send({ status: 200, user })
     } catch (error) {
-      res.status(401).send(error.message)
+      if (error instanceof ClientError) {
+        next(error)
+      }
+      next(new ServerError('Error during login', error.stack))
     }
   }
 

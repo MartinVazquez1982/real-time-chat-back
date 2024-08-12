@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+import { ClientError } from '../utils/errors.js'
 
 export const checkSessionFetch = (req, res, next) => {
   if (!req.path.startsWith('/auth')) {
@@ -9,7 +10,7 @@ export const checkSessionFetch = (req, res, next) => {
       data = jwt.verify(token, process.env.JWT_SECRET_KEY)
       req.session.user = data
     } catch {
-      return res.status(403).json({ message: 'Access not authorized' })
+      next(new ClientError('Access not authorized', 403))
     }
   }
   next()
