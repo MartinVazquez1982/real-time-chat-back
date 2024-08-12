@@ -9,6 +9,7 @@ import { internalErrors } from './middlewares/internal-errors.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import { setupSocket } from './socket.js'
+import morgan from 'morgan'
 
 const app = express()
 const server = http.createServer(app)
@@ -18,6 +19,7 @@ app.disable('x-powered-by')
 
 // Middlewares
 app.use(express.json())
+app.use(morgan('dev'))
 app.use(cookieParser())
 app.use(cors({
   origin: 'http://localhost:5173',
