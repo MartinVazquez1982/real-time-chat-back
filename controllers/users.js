@@ -9,7 +9,7 @@ export class Users {
     try {
       const result = validateUser(req.body)
       if (result.error) {
-        throw new ClientError(result.error.issues.map(item => item.message).join(' - '))
+        throw new ClientError(result.error.issues.map(item => item.message).join(' | '))
       }
       const {
         username,
