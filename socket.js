@@ -21,7 +21,7 @@ export const setupSocket = (io) => {
     })
 
     socket.on('disconnect', () => {
-      console.log('Usuario desconectado')
+      delete sockets[socket.session.user.username]
     })
   })
 }
