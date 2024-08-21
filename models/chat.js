@@ -3,9 +3,18 @@ import { ClientError, ServerError } from '../utils/errors.js'
 
 export class ChatModel {
   static async contact (userId) {
-    const [contacts] = await connection.query(
-      'SELECT BIN_TO_UUID(USERTABLE.id) as id, username FROM USERTABLE WHERE id != UUID_TO_BIN(?)',
-      [userId]
+    const [contacts] = await connection.query(`
+      SELECT 
+        BIN_TO_UUID(user.id) as id, 
+        user.username as username, 
+        SUM(CASE WHEN msg.viewed = FALSE THEN 1 ELSE 0 END) as messagesPending, 
+        COALESCE(MAX(msg.date_sent), '1970-01-01 00:00:00') AS lastMessageDate
+      FROM USERTABLE as user 
+      LEFT JOIN MESSAGE as msg ON (user.id = msg.user_id_from AND msg.user_id_to = UUID_TO_BIN(?)) 
+      WHERE user.id != UUID_TO_BIN(?)
+      GROUP BY user.id
+      ORDER BY lastMessageDate DESC
+      `, [userId, userId]
     )
     return contacts
   }
@@ -34,14 +43,35 @@ export class ChatModel {
     try {
       const [toId] = await ChatModel.getIdUser(to)
       await connection.query(
-        'INSERT INTO MESSAGE (message, date_sent, user_id_from, user_id_to) VALUES (?,?,UUID_TO_BIN(?),?);',
+        'INSERT INTO MESSAGE (message, date_sent, user_id_from, user_id_to, viewed) VALUES (?,?,UUID_TO_BIN(?),?, FALSE);',
         [message, date, from, toId.id]
       )
     } catch (e) {
       if (e instanceof ClientError) {
         throw e
       }
-      throw new ServerError('Error storing message', e.stack)
+      throw new ServerError('Error storing message.', e.stack)
+    }
+  }
+
+  static async viewedMessages (conversation) {
+    try {
+      const {
+        to,
+        from
+      } = conversation
+      const [toId] = await ChatModel.getIdUser(to)
+      await connection.query(`
+        UPDATE MESSAGE
+        SET viewed = TRUE
+        WHERE user_id_from = ? AND user_id_to = UUID_TO_BIN(?) AND NOT viewed
+        `, [toId.id, from]
+      )
+    } catch (e) {
+      if (e instanceof ClientError) {
+        throw e
+      }
+      throw new ServerError('Database error while updating message.', e.stack)
     }
   }
 

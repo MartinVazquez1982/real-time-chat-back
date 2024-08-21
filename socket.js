@@ -20,6 +20,13 @@ export const setupSocket = (io) => {
       }, socket, toSocket)
     })
 
+    socket.on('viewed', async (to) => {
+      Chat.viewedMessages({
+        from: socket.session.user.id,
+        to
+      })
+    })
+
     socket.on('disconnect', () => {
       delete sockets[socket.session.user.username]
     })

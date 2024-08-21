@@ -58,4 +58,12 @@ export class Chat {
       socketError(fromSocket, error)
     }
   }
+
+  static async viewedMessages (conversation, fromSocket) {
+    try {
+      await ChatModel.viewedMessages(conversation)
+    } catch (error) {
+      socketError(fromSocket, error)
+    }
+  }
 }
