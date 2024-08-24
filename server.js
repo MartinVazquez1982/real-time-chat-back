@@ -10,12 +10,16 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import { setupSocket } from './socket.js'
 import morgan from 'morgan'
+import { connectToDatabase } from './db.js'
 
 const app = express()
 const server = http.createServer(app)
 const io = new Server(server)
 
 app.disable('x-powered-by')
+
+// Connect to Database
+connectToDatabase()
 
 // Middlewares
 app.use(express.json())

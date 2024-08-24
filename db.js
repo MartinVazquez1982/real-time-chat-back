@@ -1,4 +1,5 @@
 import mysql from 'mysql2/promise'
+import { ServerError } from './utils/errors.js'
 
 const config = {
   host: process.env.DB_HOST,
@@ -8,4 +9,35 @@ const config = {
   database: process.env.DB_NAME
 }
 
-export const connection = await mysql.createConnection(config)
+let connection
+let isConnecting = false
+
+export const connectToDatabase = async () => {
+  if (isConnecting) return
+  isConnecting = true
+
+  while (!connection) {
+    try {
+      connection = await mysql.createConnection(config)
+
+      connection.on('error', (err) => {
+        if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+          connectToDatabase()
+        } else {
+          throw new ServerError('An issue occurred while processing your request. Please try again later.')
+        }
+      })
+    } catch (err) {
+      await new Promise(resolve => setTimeout(resolve, 5000))
+    } finally {
+      isConnecting = false
+    }
+  }
+}
+
+export const getConnection = async () => {
+  if (!connection) {
+    throw new ServerError('An issue occurred while processing your request. Please try again later.')
+  }
+  return connection
+}

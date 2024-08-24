@@ -1,8 +1,9 @@
-import { connection } from '../db.js'
+import { getConnection } from '../db.js'
 import { ClientError, ServerError } from '../utils/errors.js'
 
 export class ChatModel {
   static async contact (userId) {
+    const connection = await getConnection()
     const [contacts] = await connection.query(`
       SELECT 
         BIN_TO_UUID(user.id) as id, 
@@ -21,7 +22,8 @@ export class ChatModel {
 
   static async getMessages (fromUser, toUser) {
     const [to] = await ChatModel.getIdUser(toUser)
-    const [messages] = await connection.query(`
+    const connection = await getConnection()
+    const [messages] = connection.query(`
       SELECT 
         message, 
         date_sent as date,
@@ -42,6 +44,7 @@ export class ChatModel {
 
     try {
       const [toId] = await ChatModel.getIdUser(to)
+      const connection = await getConnection()
       await connection.query(
         'INSERT INTO MESSAGE (message, date_sent, user_id_from, user_id_to, viewed) VALUES (?,?,UUID_TO_BIN(?),?, FALSE);',
         [message, date, from, toId.id]
@@ -61,6 +64,7 @@ export class ChatModel {
         from
       } = conversation
       const [toId] = await ChatModel.getIdUser(to)
+      const connection = await getConnection()
       await connection.query(`
         UPDATE MESSAGE
         SET viewed = TRUE
@@ -76,6 +80,7 @@ export class ChatModel {
   }
 
   static async getIdUser (username) {
+    const connection = getConnection()
     const [id] = await connection.query(
       'SELECT id FROM USERTABLE WHERE username = ?',
       [username]

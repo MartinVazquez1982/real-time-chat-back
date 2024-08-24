@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt'
-import { connection } from '../db.js'
+import { getConnection } from '../db.js'
 import { ClientError, ServerError } from '../utils/errors.js'
 
 export class UserModel {
@@ -10,10 +10,11 @@ export class UserModel {
       email
     } = newUser
     try {
+      const connection = await getConnection()
       const [uuidResult] = await connection.query('SELECT UUID() uuid;')
       const { uuid } = uuidResult[0]
       const hashedPassword = await bcrypt.hash(password, parseInt(process.env.HASH_SALT_ROUND))
-      await connection.query(
+      await getConnection().query(
         'INSERT INTO USERTABLE (id, username, email, password) VALUES (UUID_TO_BIN(?),?,?,?)',
         [uuid, username, email, hashedPassword]
       )
@@ -31,6 +32,7 @@ export class UserModel {
       username,
       password
     } = User
+    const connection = await getConnection()
     const [user] = await connection.query(
       'SELECT BIN_TO_UUID(USERTABLE.id) as id, username, password FROM USERTABLE WHERE username = ?',
       [username]
