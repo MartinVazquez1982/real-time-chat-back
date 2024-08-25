@@ -1,3 +1,5 @@
+import { logger } from './logger.js'
+
 export class ClientError extends Error {
   constructor (message, statusCode = 400) {
     super(message)
@@ -10,5 +12,6 @@ export class ServerError extends Error {
     super(message)
     this.statusCode = statusCode
     this.stack = stack
+    logger.error(stack)
   }
 }
