@@ -23,7 +23,7 @@ export class ChatModel {
   static async getMessages (fromUser, toUser) {
     const [to] = await ChatModel.getIdUser(toUser)
     const connection = await getConnection()
-    const [messages] = connection.query(`
+    const [messages] = await connection.query(`
       SELECT 
         message, 
         date_sent as date,
@@ -80,7 +80,7 @@ export class ChatModel {
   }
 
   static async getIdUser (username) {
-    const connection = getConnection()
+    const connection = await getConnection()
     const [id] = await connection.query(
       'SELECT id FROM USERTABLE WHERE username = ?',
       [username]
