@@ -14,7 +14,7 @@ export class UserModel {
       const [uuidResult] = await connection.query('SELECT UUID() uuid;')
       const { uuid } = uuidResult[0]
       const hashedPassword = await bcrypt.hash(password, parseInt(process.env.HASH_SALT_ROUND))
-      await getConnection().query(
+      await connection.query(
         'INSERT INTO USERTABLE (id, username, email, password) VALUES (UUID_TO_BIN(?),?,?,?)',
         [uuid, username, email, hashedPassword]
       )
