@@ -12,6 +12,6 @@ export class ServerError extends Error {
     super(message)
     this.statusCode = statusCode
     this.stack = stack
-    logger.error(stack)
+    logger.info(stack)
   }
 }

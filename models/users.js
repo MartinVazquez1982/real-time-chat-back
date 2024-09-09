@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt'
-import { getConnection } from '../db.js'
+import { getConnection } from '../database/db.js'
 import { ClientError, ServerError } from '../utils/errors.js'
 
 export class UserModel {
@@ -22,7 +22,7 @@ export class UserModel {
       if (e.code === 'ER_DUP_ENTRY') {
         throw new ClientError('username or email registered', 409)
       } else {
-        throw new ServerError('Error creating a user', e.stack)
+        throw new ServerError('Error creating a user', e)
       }
     }
   }
@@ -32,12 +32,14 @@ export class UserModel {
       username,
       password
     } = User
+    console.log('pase')
     const connection = await getConnection()
+    console.log('pase - connection')
     const [user] = await connection.query(
       'SELECT BIN_TO_UUID(USERTABLE.id) as id, username, password FROM USERTABLE WHERE username = ?',
       [username]
     )
-
+    console.log('pase - query')
     if (user.length === 0) {
       throw new ClientError(`The user ${username} does not exist`, 401)
     }

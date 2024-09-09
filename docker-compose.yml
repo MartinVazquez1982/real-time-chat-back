@@ -1,0 +1,31 @@
+services:
+  
+  database:
+    image: mysql:8.0
+    container_name: ctr_real_time_chat_db
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database/db.sql:/docker-entrypoint-initdb.d/db.sql:ro
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+    secrets:
+      - db_root_password
+
+
+  backend:
+    depends_on:
+      - database
+    container_name: ctr_real_time_chat_back
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: img_real_time_chat_back
+    ports:
+      - "3000:3000"
+
+secrets:
+  db_root_password:
+    file: ./database/db_root_password.txt
+
+volumes:
+  db_data:

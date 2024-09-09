@@ -40,10 +40,11 @@ export class Users {
         maxAge: 1000 * 60 * 60 // La cookie solo vale una hora
       }).send({ status: 200, user })
     } catch (error) {
+      console.error(error)
       if (error instanceof ClientError) {
         next(error)
       }
-      next(new ServerError('Error during login', error.stack))
+      next(new ServerError('Error during login', error))
     }
   }
 

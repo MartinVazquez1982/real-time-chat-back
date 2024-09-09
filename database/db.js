@@ -1,5 +1,5 @@
 import mysql from 'mysql2/promise'
-import { ServerError } from './utils/errors.js'
+import { ServerError } from '../utils/errors.js'
 
 const config = {
   host: process.env.DB_HOST,
@@ -21,6 +21,7 @@ export const connectToDatabase = async () => {
       connection = await mysql.createConnection(config)
 
       connection.on('error', (err) => {
+        console.error(err)
         if (err.code === 'PROTOCOL_CONNECTION_LOST') {
           connectToDatabase()
         } else {
@@ -28,6 +29,7 @@ export const connectToDatabase = async () => {
         }
       })
     } catch (err) {
+      console.error(err)
       await new Promise(resolve => setTimeout(resolve, 5000))
     } finally {
       isConnecting = false

@@ -26,3 +26,6 @@ logs/*.log
 
 # Http tests
 http_tests/
+
+# Dababase root password
+database/db_root_password.txt

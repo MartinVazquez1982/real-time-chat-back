@@ -1,4 +1,4 @@
-import { getConnection } from '../db.js'
+import { getConnection } from '../database/db.js'
 import { ClientError, ServerError } from '../utils/errors.js'
 
 export class ChatModel {
@@ -53,7 +53,7 @@ export class ChatModel {
       if (e instanceof ClientError) {
         throw e
       }
-      throw new ServerError('Error storing message.', e.stack)
+      throw new ServerError('Error storing message.', e)
     }
   }
 
@@ -75,7 +75,7 @@ export class ChatModel {
       if (e instanceof ClientError) {
         throw e
       }
-      throw new ServerError('Database error while updating message.', e.stack)
+      throw new ServerError('Database error while updating message.', e)
     }
   }
 
