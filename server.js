@@ -11,6 +11,7 @@ import cookieParser from 'cookie-parser'
 import { setupSocket } from './socket.js'
 import morgan from 'morgan'
 import { connectToDatabase } from './database/db.js'
+import { originFunction } from './utils/cors.js'
 
 const app = express()
 const server = http.createServer(app)
@@ -26,7 +27,7 @@ app.use(express.json())
 app.use(morgan('dev'))
 app.use(cookieParser())
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: originFunction,
   credentials: true
 }))
 

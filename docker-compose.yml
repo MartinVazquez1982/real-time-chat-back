@@ -10,6 +10,8 @@ services:
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
     secrets:
       - db_root_password
+    networks:
+      - REAL_TIME_CHAT_NETWORK
 
 
   backend:
@@ -22,10 +24,16 @@ services:
     image: img_real_time_chat_back
     ports:
       - "3000:3000"
+    networks:
+      - REAL_TIME_CHAT_NETWORK
 
 secrets:
   db_root_password:
     file: ./database/db_root_password.txt
+
+networks:
+  REAL_TIME_CHAT_NETWORK:
+    driver: bridge
 
 volumes:
   db_data:
