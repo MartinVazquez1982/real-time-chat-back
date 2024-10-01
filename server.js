@@ -4,6 +4,7 @@ import http from 'http'
 import { Server } from 'socket.io'
 import { userRouter } from './routes/users.js'
 import { chatRouter } from './routes/chat.js'
+import { viewsRouter } from './routes/views.js'
 import { checkSessionFetch } from './middlewares/check-sesion-fetch.js'
 import { internalErrors } from './middlewares/internal-errors.js'
 import cors from 'cors'
@@ -35,10 +36,7 @@ app.use(cors({
 app.use(checkSessionFetch)
 
 // Routes
-app.get('/', (req, res) => {
-  res.send('Servidor de chat en tiempo real funcionando')
-})
-
+app.use('/', viewsRouter)
 app.use('/auth', userRouter)
 app.use('/chat', chatRouter)
 
