@@ -1,8 +1,14 @@
 import jwt from 'jsonwebtoken'
 import { ClientError } from '../utils/errors.js'
 
+const checkPath = (path) => {
+  return (
+    !path.startsWith('/auth') && path !== '/' && path !== '/docs'
+  )
+}
+
 export const checkSessionFetch = (req, res, next) => {
-  if (!req.path.startsWith('/auth') && req.path !== '/') {
+  if (checkPath(req.path)) {
     const token = req.cookies.access_token
     let data = null
     req.session = { user: null }

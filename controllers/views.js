@@ -8,4 +8,8 @@ export class Views {
   static async home (req, res, next) {
     res.sendFile(path.join(__dirname, '..', 'public', 'views', 'home.html'))
   }
+
+  static async docs (req, res, next) {
+    res.sendFile(path.join(__dirname, '..', 'public', 'views', 'docs.html'))
+  }
 }

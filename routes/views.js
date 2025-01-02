@@ -4,3 +4,5 @@ import { Views } from '../controllers/views.js'
 export const viewsRouter = Router()
 
 viewsRouter.get('/', Views.home)
+
+viewsRouter.get('/docs', Views.docs)
