@@ -32,14 +32,11 @@ export class UserModel {
       username,
       password
     } = User
-    console.log('pase')
     const connection = await getConnection()
-    console.log('pase - connection')
     const [user] = await connection.query(
       'SELECT BIN_TO_UUID(USERTABLE.id) as id, username, password FROM USERTABLE WHERE username = ?',
       [username]
     )
-    console.log('pase - query')
     if (user.length === 0) {
       throw new ClientError(`The user ${username} does not exist`, 401)
     }

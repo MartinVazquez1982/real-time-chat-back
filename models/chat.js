@@ -8,7 +8,7 @@ export class ChatModel {
       SELECT 
         BIN_TO_UUID(user.id) as id, 
         user.username as username, 
-        SUM(CASE WHEN msg.viewed = FALSE THEN 1 ELSE 0 END) as messagesPending, 
+        SUM(COALESCE(msg.unseen, 0)) as messagesPending,
         COALESCE(MAX(msg.date_sent), '1970-01-01 00:00:00') AS lastMessageDate
       FROM USERTABLE as user 
       LEFT JOIN MESSAGE as msg ON (user.id = msg.user_id_from AND msg.user_id_to = UUID_TO_BIN(?)) 
@@ -46,7 +46,7 @@ export class ChatModel {
       const [toId] = await ChatModel.getIdUser(to)
       const connection = await getConnection()
       await connection.query(
-        'INSERT INTO MESSAGE (message, date_sent, user_id_from, user_id_to, viewed) VALUES (?,?,UUID_TO_BIN(?),?, FALSE);',
+        'INSERT INTO MESSAGE (message, date_sent, user_id_from, user_id_to) VALUES (?,?,UUID_TO_BIN(?),?);',
         [message, date, from, toId.id]
       )
     } catch (e) {
@@ -67,8 +67,8 @@ export class ChatModel {
       const connection = await getConnection()
       await connection.query(`
         UPDATE MESSAGE
-        SET viewed = TRUE
-        WHERE user_id_from = ? AND user_id_to = UUID_TO_BIN(?) AND NOT viewed
+        SET unseen = 0
+        WHERE (user_id_from = ? AND user_id_to = UUID_TO_BIN(?) AND unseen = 1);
         `, [toId.id, from]
       )
     } catch (e) {

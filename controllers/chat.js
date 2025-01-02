@@ -26,7 +26,7 @@ export class Chat {
     }
   }
 
-  static async sendMessage (data, fromSocket, toSocket) {
+  static async sendMessage (data, fromSockets, toSockets, currentSocket) {
     try {
       const {
         message,
@@ -50,12 +50,16 @@ export class Chat {
         from: fromID,
         to
       })
-      if (toSocket !== null) {
-        toSocket.emit('chat_message', message, fromUser, to, date)
+      if (toSockets !== null) {
+        toSockets.forEach(socket => {
+          socket.emit('chat_message', message, fromUser, to, date)
+        })
       }
-      fromSocket.emit('chat_message', message, fromUser, to, date)
+      fromSockets.forEach(socket => {
+        socket.emit('chat_message', message, fromUser, to, date)
+      })
     } catch (error) {
-      socketError(fromSocket, error)
+      socketError(currentSocket, error)
     }
   }
 

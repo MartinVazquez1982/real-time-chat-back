@@ -1,6 +1,8 @@
 import 'dotenv/config'
 import express from 'express'
 import http from 'http'
+import path from 'path'
+import { fileURLToPath } from 'url'
 import { Server } from 'socket.io'
 import { userRouter } from './routes/users.js'
 import { chatRouter } from './routes/chat.js'
@@ -13,6 +15,9 @@ import { setupSocket } from './socket.js'
 import morgan from 'morgan'
 import { connectToDatabase } from './database/db.js'
 import { originFunction } from './utils/cors.js'
+
+const __filename = fileURLToPath(import.meta.url)
+export const __dirname = path.dirname(__filename)
 
 const app = express()
 const server = http.createServer(app)
@@ -31,6 +36,7 @@ app.use(cors({
   origin: originFunction,
   credentials: true
 }))
+app.use(express.static(path.join(__dirname, 'public')))
 
 // Middleware session
 app.use(checkSessionFetch)

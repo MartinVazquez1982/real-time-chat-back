@@ -7,26 +7,31 @@ export const setupSocket = (io) => {
   io.use(checkSessionSocket)
 
   io.on('connection', (socket) => {
-    sockets.set(socket.session.user.username, socket)
+    if (sockets.has(socket.session.user.username)) {
+      sockets.get(socket.session.user.username).push(socket)
+    } else {
+      sockets.set(socket.session.user.username, [socket])
+    }
 
     io.emit('user_connected', socket.session.user.username)
 
     socket.on('chat_message', async (msg, username, dateMsg) => {
       const toSocket = sockets.get(username) || null
+      const fromSocket = sockets.get(socket.session.user.username)
       await Chat.sendMessage({
         message: msg,
         date: dateMsg,
         fromID: socket.session.user.id,
         fromUser: socket.session.user.username,
         to: username
-      }, socket, toSocket)
+      }, fromSocket, toSocket, socket)
     })
 
     socket.on('viewed', async (to) => {
       await Chat.viewedMessages({
         from: socket.session.user.id,
         to
-      })
+      }, socket)
     })
 
     socket.on('user_connected', (user) => {
@@ -35,8 +40,13 @@ export const setupSocket = (io) => {
     })
 
     socket.on('disconnect', () => {
-      sockets.delete(socket.session.user.username)
-      io.emit('user_desconected', socket.session.user.username)
+      const userSocket = sockets.get(socket.session.user.username)
+      const index = userSocket.indexOf(socket)
+      userSocket.splice(index, 1)
+      if (userSocket.length === 0) {
+        sockets.delete(socket.session.user.username)
+        io.emit('user_desconected', socket.session.user.username)
+      }
     })
   })
 }
