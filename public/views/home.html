@@ -4,9 +4,47 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Real Time Chat Server</title>
+  <link rel="stylesheet" href="css/home.css">
+  <script src="js/home.js"></script>
 </head>
 <body>
-  <h1>Real Time Chat</h1>
-  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde excepturi suscipit alias, maxime enim, ipsum, consequuntur officia sed minima reiciendis laudantium! Necessitatibus iste similique totam nisi vero reiciendis maxime possimus.</p>
+  <div>
+    <div id='background'>
+      <div id='green-line'></div>
+    </div>
+    <div id="squares"></div>
+  </div>
+  <main>
+    <section>
+      <h1>REAL TIME CHAT SERVER</h1>
+      <article>
+        <p>This project is a real-time chat application that uses Express and MySQL on the backend for user and message management, with Socket.io enabling instant communication. The frontend is developed with Vite and React, allowing for fast and modular development, optimizing the performance of the web application.</p>
+        <img src="images/chat.svg" alt="chat">
+      </article>
+      <article id="links">
+        <div class="api-doc">
+          <h3>API DOCS</h3>
+          <a href="/docs">
+            <img src="images/docu.svg" alt="Docs" title="docs">
+          </a>
+        </div>
+        <div id="repositories">
+          <h3>REPOSITORIES</h3>
+          <div>
+            <div class="repository">
+              <a href="https://github.com/MartinVazquez1982/real-time-chat-front" title="frontend" target="_blank">
+                <img src="images/front.svg" alt="frontend">
+              </a>
+            </div>
+            <div class="repository">
+              <a href="https://github.com/MartinVazquez1982/real-time-chat-back" title="backend" target="_blank">
+                <img src="images/back.svg" alt="backend">
+              </a>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
 </body>
 </html>
